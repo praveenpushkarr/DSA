@@ -291,7 +291,7 @@ public static void main(String[] args) throws Exception {
 }
 
 //Question : Infix evaluation
-class Main{ 
+class InfixEvaluation{ 
 public static void main(String[] args) throws Exception {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     String exp = br.readLine();
@@ -366,3 +366,193 @@ public static void main(String[] args) throws Exception {
      else return v1/v2;
 }
 }
+
+// Question: Infix Conversion to postfix and prefix
+// infix= (a+b) 
+// postfix= ab+
+// prefix= +ab
+class InfixConversions{
+   public static void main(String[] args) throws Exception {
+       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+       String exp = br.readLine();
+   
+       // code
+       Stack<String>pre=new Stack<>();
+       Stack<String>post=new Stack<>();
+       Stack<Character>op=new Stack<>();
+   
+       for(int i=0;i<exp.length();i++){
+           char ch=exp.charAt(i);
+           if(ch>='a' && ch<='z'){
+               pre.push(""+ch);
+               post.push(""+ch);
+           }
+           else if(ch=='('){
+               op.push(ch);
+           }
+           else if(ch==')'){
+               while(op.peek()!='('){
+                   String pre_v2=pre.pop();
+                   String pre_v1=pre.pop();
+                   String post_v2=post.pop();
+                   String post_v1=post.pop();
+                   char operator=op.pop();
+   
+                   pre.push(""+operator+pre_v1+pre_v2);
+                   post.push(post_v1+post_v2+operator);
+               }
+               op.pop();
+           }
+           else if(ch=='+' || ch=='-' || ch=='*' || ch=='/'){
+               while(op.size()>0 && op.peek()!='(' && precedence(ch)<=precedence(op.peek())){
+                   String pre_v2=pre.pop();
+                   String pre_v1=pre.pop();
+                   String post_v2=post.pop();
+                   String post_v1=post.pop();
+                   char operator=op.pop();
+   
+                   pre.push(""+operator+pre_v1+pre_v2);
+                   post.push(post_v1+post_v2+operator);
+               }
+               op.push(ch);
+           }
+       }
+       while(op.size()>0){
+           String pre_v2=pre.pop();
+           String pre_v1=pre.pop();
+           String post_v2=post.pop();
+           String post_v1=post.pop();
+           char operator=op.pop();
+   
+           pre.push(""+operator+pre_v1+pre_v2);
+           post.push(post_v1+post_v2+operator);
+       }
+       System.out.println(post.peek());
+       System.out.println(pre.peek());
+    }
+   public static int precedence(char operator){
+        if(operator=='+'){
+            return 1;
+        }
+        else if(operator=='-'){
+            return 1;
+        }
+        else if(operator=='*'){
+            return 2;
+        }
+        else return 2;
+       
+    }
+   }
+
+// Qusetion: Postfix conversion and evaluation
+// Sample Input
+// 264*8/+3-
+// Sample Output
+// 2
+// ((2+((6*4)/8))-3)
+// -+2/*6483   
+class PostfixConversionEvaluation{
+public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String exp = br.readLine();
+
+    // code
+    Stack<Integer>val=new Stack<>();
+    Stack<String>in=new Stack<>();
+    Stack<String>pre=new Stack<>();
+    for(int i=0;i<exp.length();i++){
+        char ch=exp.charAt(i);
+        if(Character.isDigit(ch)){
+            in.push(""+ch);
+            pre.push(""+ch);
+            val.push(ch-'0');
+        }
+        else if(ch=='+' || ch=='-' || ch=='*' || ch=='/'){
+            int v2=val.pop();
+            int v1=val.pop();
+            String in_v2=in.pop();
+            String in_v1=in.pop();
+            String pre_v2=pre.pop();
+            String pre_v1=pre.pop();
+            
+            int ans=operation(v1,v2,ch);
+            val.push(ans);
+            in.push( "(" + in_v1 + ch + in_v2 + ")" );
+            pre.push( "" + ch + pre_v1 + pre_v2 );
+        }
+    }
+    System.out.println(val.peek());
+    System.out.println(in.peek());
+    System.out.println(pre.peek());
+
+ }
+ public static int operation(int v1, int v2 , char operator){
+     if(operator=='+'){
+         return v1+v2;
+     }
+     else if(operator=='-'){
+         return v1-v2;
+     }
+     else if(operator=='*'){
+         return v1*v2;
+     }
+     else return v1/v2;
+}
+}
+
+//Question: Prefix conversion and evaluation
+class PrefixCOnversionEvalutaion{
+public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String exp = br.readLine();
+
+    // code
+    Stack<Integer>val=new Stack<>();
+    Stack<String>in=new Stack<>();
+    Stack<String>post=new Stack<>();
+    for(int i=exp.length()-1;i>=0;i--){
+        char ch=exp.charAt(i);
+        if(Character.isDigit(ch)){
+            in.push(""+ch);
+            post.push(""+ch);
+            val.push(ch-'0');
+        }
+        else if(ch=='+' || ch=='-' || ch=='*' || ch=='/'){
+            int v1=val.pop();
+            int v2=val.pop();
+            String in_v1=in.pop();
+            String in_v2=in.pop();
+            String post_v1=post.pop();
+            String post_v2=post.pop();
+            
+            
+            int ans=operation(v1,v2,ch);
+            val.push(ans);
+            in.push( "(" + in_v1 + ch + in_v2 + ")" );
+            post.push( post_v1 + post_v2 + ch );
+        }
+    }
+    System.out.println(val.peek());
+    System.out.println(in.peek());
+    System.out.println(post.peek());
+
+ }
+ public static int operation(int v1, int v2 , char operator){
+     if(operator=='+'){
+         return v1+v2;
+     }
+     else if(operator=='-'){
+         return v1-v2;
+     }
+     else if(operator=='*'){
+         return v1*v2;
+     }
+     else return v1/v2;
+}
+}
+
+
+
+
+
