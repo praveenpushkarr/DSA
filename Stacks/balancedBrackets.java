@@ -552,7 +552,142 @@ public static void main(String[] args) throws Exception {
 }
 }
 
+// Question: Celebrity Problem
+class CelebrityProblem {
+public static void main(String[] args) throws Exception {
+       // write your code here
+       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+       int n = Integer.parseInt(br.readLine());
+       int[][] arr = new int[n][n];
 
+       for (int j = 0; j < n; j++) {
+           String line = br.readLine();
+           for (int k = 0; k < n; k++) {
+               arr[j][k] = line.charAt(k) - '0';
+           }
+       }
+       findCelebrity(arr);
+   }
+   public static void findCelebrity(int[][] arr) {
+       // if a celebrity is there print it''s index (not position), if there is not then print "none"
+       Stack<Integer> stck=new Stack<>();
+       for(int i=0;i<arr.length;i++){
+           stck.push(i);
+       }
+       while(stck.size()>1){
+           int i=stck.pop();
+           int j=stck.pop();
+           if(arr[i][j]==0){
+               stck.push(i);
+           }
+           else{
+               stck.push(j);
+           }
+       }
+       int suspectCel=stck.pop();
+       boolean flag=true;
+       for(int i=0;i<arr.length;i++){
+           if(i!=suspectCel){
+               if(arr[suspectCel][i]==1 || arr[i][suspectCel]==0){
+                   flag=false;
+                   break;
+               }
+           }
+       }
+       if(flag){
+           System.out.println(suspectCel);
+       }
+       else System.out.println("none");
+   }
+}
 
-
-
+//Question: Merge Overlapping Interval
+class MergeOverlappingInterval{
+    public static void main(String[] args) throws Exception {
+        // write your code here
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        int[][] arr = new int[n][2];
+        for (int j = 0; j < n; j++) {
+            String line = br.readLine();
+            arr[j][0] = Integer.parseInt(line.split(" ")[0]);
+            arr[j][1] = Integer.parseInt(line.split(" ")[1]);
+        }
+        mergeOverlappingIntervals(arr);
+    }
+    public static void mergeOverlappingIntervals(int[][] arr) {
+        // merge overlapping intervals and print in increasing order of start time
+        Pair[]pairs=new Pair[arr.length];
+        for(int i=0;i<arr.length;i++){
+            pairs[i]=new Pair(arr[i][0],arr[i][1]);
+        }
+        Arrays.sort(pairs);
+        Stack<Pair>stck=new Stack<>();
+        stck.push(pairs[0]);
+        for(int i=1;i<pairs.length;i++){
+            Pair top=stck.peek();
+            if(pairs[i].st>top.et){
+                stck.push(pairs[i]);
+            }
+            else{
+                top.et=Math.max(top.et,pairs[i].et);
+            }
+        }
+        Stack<Pair>ans=new Stack<>();
+        while(stck.size()>0){
+            ans.push(stck.pop());
+        }
+        while(ans.size()>0){
+            Pair top=ans.pop();
+            System.out.println(top.st+" "+top.et);
+        }
+    }
+    public static class Pair implements Comparable<Pair>{
+        int st;
+        int et;     
+        Pair(int st,int et){
+            this.st=st;
+            this.et=et;
+        }
+        public int compareTo(Pair other){
+            if(this.st!=other.st){
+                return this.st - other.st;
+            }
+            else{
+                return this.et - other.et;
+            }
+        }
+    }
+}
+//Question: Smallest Number Following Pattern
+// ddddiiii
+// 543216789
+class SmallestNumberFollowingPattern{ 
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String str = br.readLine();
+        // code
+        Stack<Integer>stck=new Stack<>();
+        int i=1;
+        String ans="";
+        for(int j=0;j<str.length();j++){
+            char ch=str.charAt(j);
+            if(ch=='d'){
+                stck.push(i);
+                i++;
+            }
+            else{
+                stck.push(i);
+                i++;
+                while(!stck.isEmpty()){
+                    ans+=stck.pop();
+                }
+            }
+        }
+        stck.push(i);
+        while(!stck.isEmpty()){
+            ans+=stck.pop();
+        }
+        System.out.println(ans);
+     }
+    }
