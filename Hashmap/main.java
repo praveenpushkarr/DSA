@@ -4,6 +4,7 @@ import java.util.*;
 
 //HashMap: HashMap<key,value> name =new HashMap<>(); put,get,containsKey,keySet,remove
 //HashSet: HashSet<key> name =new HashSet<>(); add,contains,remove
+// TreeMap are same as hashmap but they are sorted according to key order
 
 public class main {
     public static void main(String[] args){
