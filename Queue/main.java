@@ -1,4 +1,4 @@
-package Queues;
+package Queue;
 
 // Queue<Integer> que=new ArrayDeque<>();
 // Queue is an interface which is implemented by Dequeue interface which is implemented by ArrayDeque class

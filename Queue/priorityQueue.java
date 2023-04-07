@@ -1,4 +1,4 @@
-package Queues;
+package Queue;
 
 //priority queue is like a normal queue but in pq we can control the priority order of the elements.
 // add and remove has O(log n)
