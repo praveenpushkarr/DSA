@@ -56,21 +56,18 @@ public class main {
         graph[6].add(new Edge(6, 4, 8));
         graph[6].add(new Edge(6, 5, 3));
 
-// if u want to take input for graph do it like this
-        // int edges=Integer.parseInt(s.nextLine()); //this is to take the input of edges
-        // for(int i=0;i<edges;i++){
-        //     String[] parts=s.nextLine().split(" ");
-        //     int v1=Integer.parseInt(parts[0]);
-        //     int v2=Integer.parseInt(parts[1]);
-        //     int wt=Integer.parseInt(parts[2]);
-        //     graph[v1].add(new Edge(v1,v2,wt));
-        //     graph[v2].add(new Edge(v2,v1,wt));
-        // }
         int src=0;
-        int des=2;
+        int des=6;
         boolean []visited=new boolean[vces];
+        int k=3;
+        int criteria=30;
+
         //System.out.println(hasPath(graph,src,des,visited));
-        printAllPaths(graph,src,des,visited,"");
+
+        //printAllPaths(graph,src,des,visited,"");
+        
+        multisolver(graph,src,des,visited,criteria,k,""+src,0);
+        printVal();
     }
 
 // To check if there's a path present or not    
@@ -95,6 +92,70 @@ public class main {
         for(Edge edge:graph[src]){
             if(!visited[edge.nbr]){
                 printAllPaths(graph,edge.nbr,des,visited,ans+edge.src);
+            }
+        }
+        visited[src]=false;
+    }
+// Smallest, longest, ceil, floor, kth largest path 
+static String spath;
+static Integer spathwt = Integer.MAX_VALUE;
+static String lpath;
+static Integer lpathwt = Integer.MIN_VALUE;
+static String cpath;
+static Integer cpathwt = Integer.MAX_VALUE;
+static String fpath;
+static Integer fpathwt = Integer.MIN_VALUE;
+static PriorityQueue<Pair> pq = new PriorityQueue<>();
+
+    public static void printVal(){
+        System.out.println("Smallest path " + spath+"@"+spathwt);
+        System.out.println("Longest path " + lpath+"@"+lpathwt);
+        System.out.println("Ceil path " + cpath+"@"+cpathwt);
+        System.out.println("Floor path " + fpath+"@"+fpathwt);
+        System.out.println("KthLargest path " + pq.peek().psf+"@"+pq.peek().wsf);
+    }
+    static class Pair implements Comparable<Pair>{
+        String psf;
+        int wsf;
+        Pair(int wsf,String psf){
+            this.wsf=wsf;
+            this.psf=psf;
+        }
+        public int compareTo(Pair o){
+            return this.wsf-o.wsf;
+        }
+    }
+    public static void multisolver(ArrayList<Edge>[] graph,int src,int des, boolean[] visited,int criteria,int k,String psf,int wsf){
+        if(src==des){
+            if(wsf<spathwt){
+                spathwt=wsf;
+                spath=psf;
+            }
+            if(wsf>lpathwt){
+                lpathwt=wsf;
+                lpath=psf;
+            }
+            if(wsf>criteria && wsf<cpathwt){
+                cpathwt=wsf;
+                cpath=psf;
+            }
+            if(wsf<criteria && wsf>fpathwt){
+                fpathwt=wsf;
+                fpath=psf;
+            }
+            if(pq.size()<k){
+                pq.add(new Pair(wsf,psf));
+            }
+            else if(wsf>pq.peek().wsf){
+                pq.remove();
+                pq.add(new Pair(wsf,psf));
+            }
+        }
+
+        visited[src]=true;
+        for(Edge e:graph[src]){
+            if(!visited[e.nbr]){
+                multisolver(graph,e.nbr,des,visited,criteria,k,psf+e.nbr,wsf+e.wt);
             }
         }
         visited[src]=false;
